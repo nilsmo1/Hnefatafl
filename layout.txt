@@ -1,0 +1,23 @@
+Layout for the starting board in a game of Hnefatafl:
+                
+                    . . . B B B B B . . .
+                    . . . . . B . . . . .
+                    . . . . . . . . . . .
+                    B . . . . W . . . . B
+                    B . . . W W W . . . B
+                    B B . W W K W W . B B
+                    B . . . W W W . . . B
+                    B . . . . W . . . . B
+                    . . . . . . . . . . .
+                    . . . . . . . . . . .
+                    . . . . . B . . . . .
+                    . . . B B B B B . . .
+
+Roles:
+    Attackers:
+        "B", a regular black piece
+    Defenders:
+        "W", a regular white piece
+        "K", the white king
+
+
