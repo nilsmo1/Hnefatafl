@@ -62,3 +62,13 @@ class Piece:
             Tuple[int, int, int]
         """
         return self.color
+
+    def get_role(self) -> str:
+        """
+        Returns the role of a piece.
+        @ Parameters:
+            None
+        @ Return:
+            str
+        """
+        return self.role

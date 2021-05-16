@@ -1,6 +1,6 @@
 # Board class
 
-from Colors import BLACK, LIGHT_GRAY, OFFWHITE
+from Colors import BLACK, LIGHT_GRAY, OFFWHITE, WHITE
 from Piece import Piece
 from typing import List, Union
 
@@ -108,6 +108,12 @@ class Board:
         invalid_positions = [(self.size-1, 0), (0, self.size-1),
                              (self.size-1, self.size-1), (0, 0)]
         same_row_or_same_col = (row == new_row) ^ (col == new_col)
+        if self.board[row][col].get_role() == "KING":
+            return (same_row_or_same_col and not 
+                    self.occupied(new_row, new_col) and 
+                    self.in_bounds(new_row, new_col) and
+                    (new_row,new_col) not in invalid_positions[-1:])
+            
         return (same_row_or_same_col and not 
                 self.occupied(new_row, new_col) and 
                 self.in_bounds(new_row, new_col) and
@@ -129,3 +135,23 @@ class Board:
             tmp_row, tmp_col = row, col
             self.board[new_row][new_col] = self.board[row][col]
             self.board[tmp_row][tmp_col] = None
+
+    def game_over(self) -> Tuple[int, int, int]:
+        """
+        Checks if the board is in a state where one of the teams has won.
+        Returns a color depending on which team won.
+        @ Parameters:
+            None
+        @ Return:
+            Tuple[int, int, int]
+        """
+        corners = [(self.size-1, 0), (0, self.size-1),
+                   (self.size-1, self.size-1)]
+        for row, col in corners:
+            pos = self.board[row][col]
+            if pos != None:
+                if pos.get_role() == "KING":
+                    return WHITE
+        # TODO: make win-conditions for BLACK team
+
+        
