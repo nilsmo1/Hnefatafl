@@ -9,6 +9,15 @@ from typing import Tuple
 def display_pieces(window: pygame.Surface,
                    window_size: Tuple[int, int],
                    board: Board) -> None:
+    """
+    Displays the pieces in the correct positions on the board.
+    @ Params:
+        window     : pygame.Surface
+        window_size: Tuple[int,int]
+        board      : Board
+    @ Return:
+        None
+    """
     piece_radius = 20 
     margin = 100
     window_width, window_height = window_size
@@ -21,12 +30,17 @@ def display_pieces(window: pygame.Surface,
 
     for row in range(size):
         for col in range(size):
+            print(type(row),type(col))
             elem = current_board_state[row][col]
             if elem is not None:
-                print(f"row {row}, col {col}, color {elem.get_color()}")
-                circle = pygame.draw.circle(window, elem.get_color(),
-                                  (increment(row), increment(col)), 
+                print(f"row {row}, col {col}, color {elem.get_color()}, elem")
+                pygame.draw.circle(window, elem.get_color(),
+                                  (increment(col), increment(row)), 
                                    piece_radius)
+            else:
+                print(f"row {row}, col {col}")
+        for row in board.get_state():
+            print(row)
 
 def display_board(window     : pygame.Surface,
                   window_size: Tuple[int, int],

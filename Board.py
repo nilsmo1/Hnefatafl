@@ -28,18 +28,17 @@ class Board:
             None
         """
         RAW = list("""
-        ...BBBBB...
-        .....B.....
-        ...........
-        B....W....B
-        B...WWW...B
-        BB.WWKWW.BB
-        B...WWW...B
-        B....W....B
-        ...........
-        ...........
-        .....B.....
-        ...BBBBB...""".split("\n")[1:])
+        . . . B B B B B . . .
+        . . . . . B . . . . .
+        . . . . . . . . . . .
+        B . . . . W . . . . B
+        B . . . W W W . . . B
+        B B . W W K W W . B B
+        B . . . W W W . . . B
+        B . . . . W . . . . B
+        . . . . . . . . . . .
+        . . . . . B . . . . .
+        . . . B B B B B . . .""".replace(" ","").split("\n")[1:])
         board = [list(row.strip()) for row in RAW]
         
         for i,row in enumerate(board):
