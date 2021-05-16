@@ -1,5 +1,6 @@
 # Board class
 
+from Colors import BLACK, LIGHT_GRAY, OFFWHITE
 from Piece import Piece
 from typing import List, Union
 
@@ -43,9 +44,9 @@ class Board:
         
         for i,row in enumerate(board):
             for j,pos in enumerate(row):
-                if   pos == "B": board[i][j] = Piece(i,j,"BLACK")
-                elif pos == "W": board[i][j] = Piece(i,j,"WHITE")
-                elif pos == "K": board[i][j] = Piece(i,j,"KING" )
+                if   pos == "B": board[i][j] = Piece(i,j,"BLACK", BLACK)
+                elif pos == "W": board[i][j] = Piece(i,j,"WHITE", OFFWHITE)
+                elif pos == "K": board[i][j] = Piece(i,j,"KING" , LIGHT_GRAY)
                 else           : board[i][j] = None
 
         self.board = board
@@ -59,3 +60,13 @@ class Board:
             List[Union[None, Piece]]
         """
         return self.board
+
+    def get_size(self) -> int:
+        """
+        Returns the size of the side length of the board.
+        @ Parameters:
+            None
+        @ Return:
+            int
+        """
+        return self.size
