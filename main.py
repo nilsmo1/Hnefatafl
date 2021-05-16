@@ -1,10 +1,12 @@
 # Main program
 
+
 from Board import Board
 from Piece import Piece
 from Colors import BLACK, WHITE, RED
 import pygame
 from typing import Tuple
+
 
 def display_pieces(window: pygame.Surface,
                    window_size: Tuple[int, int],
@@ -35,6 +37,7 @@ def display_pieces(window: pygame.Surface,
                 pygame.draw.circle(window, elem.get_color(),
                                   (increment(col), increment(row)), 
                                    piece_radius)
+
 
 def display_board(window     : pygame.Surface,
                   window_size: Tuple[int, int],
@@ -67,6 +70,7 @@ def display_board(window     : pygame.Surface,
             (increment(col), window_width - margin),2)
     display_pieces(window, window_size, board)
 
+
 def print_board(board: Board) -> None:
     """
     Prints a given "Board" object to stdout.
@@ -79,7 +83,63 @@ def print_board(board: Board) -> None:
         row = ' '.join([str(pos) if pos != None else " " for pos in row])
         print(row)
 
+def row_col_from_coordinates(board: Board,
+                             window_size: Tuple[int, int],
+                             coord_x: float, 
+                             coord_y: float) -> Tuple[int, int]:
+    """
+    Returns the row and col of the board depending on given coordinates.
+    @ Parameters:
+        board      : Board
+        window_size: Tuple[int, int] 
+        coord_x    : float
+        coord_y    : float
+    @ Return:
+        Tuple[int, int]
+    """
+    margin = 100
+    window_width, _ = window_size
+    relevant_board_start = margin
+    relevant_board_end   = window_width - margin
+    position_width = (window_width-2*margin) / board.get_size()
+    row = (coord_y - 100) / position_width
+    col = (coord_x - 100) / position_width
+    return (int(row), int(col))
 
+def move(window: pygame.Surface,
+         window_size: Tuple[int, int],
+         board: Board) -> Board:
+    """
+    Lets the player select a tile and then another tile to move a piece.
+    @ Parameters:
+        window     : pygame.Surface
+        window_size: Tuple[int, int]
+        board      : Board
+    @ Return:
+        Board
+    """
+    done_selecting = False
+    fully_done = False
+    while not fully_done:
+        while not done_selecting:
+            for event in pygame.event.get():
+                if pygame.mouse.get_pressed()[0]:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    row, col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
+                    print(f"First (row: {row}, col: {col})")
+                    done_selecting = True
+        for event in pygame.event.get():
+            if pygame.mouse.get_pressed()[0]:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                new_row, new_col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
+                print(f"Second: row: {new_row} col: {new_col}")
+                fully_done = True
+            elif pygame.mouse.get_pressed()[2]:
+                done_selecting = False
+    board.move(row, col, new_row, new_col)
+    return board
+
+        
 def main() -> None:
     """
     Main function for Hnefatafl
@@ -95,6 +155,9 @@ def main() -> None:
     board = Board(11)
     board.init_board()
     print_board(board)
+    window.fill(WHITE)
+    display_board(window, window_size, board)
+    pygame.display.update()
     Running = True
     # Press Q or the close the window to exit
     while Running:
@@ -104,10 +167,10 @@ def main() -> None:
                 event.key  == pygame.K_q
                 ): Running = False
         window.fill(WHITE)
-        display_board(window, window_size, board)        
+        board = move(window, window_size, board)
+        display_board(window, window_size, board)
         pygame.display.update()
 
 
 if __name__ == "__main__":
     main()
-

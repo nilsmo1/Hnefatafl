@@ -69,3 +69,45 @@ class Board:
             int
         """
         return self.size
+    
+    def occupied(self, row: int, col: int) -> bool:
+        """
+        Sees if a given cell is occupied or empty.
+        @ Parameters:
+            row: int
+            col: int
+        @ Return:
+            bool
+        """
+        return self.board[row][col] != None
+
+    def validate_move(self, row: int, col: int, new_row: int, new_col: int) -> bool:
+        """
+        Validates a move so that illegal moves are ignored.
+        @ Parameters:
+            row    : int
+            col    : int
+            new_row: int
+            new_col: int
+        @ Return:
+            bool
+        """
+        same_row_or_same_col = (row == new_row) ^ (col == new_col)
+        return same_row_or_same_col and not self.occupied(new_row, new_col)
+
+
+    def move(self, row, col, new_row, new_col) -> None:
+        """
+        Moves a piece on the board
+        @ Parameters:
+            row    : int
+            col    : int
+            new_row: int
+            new_col: int
+        @ Return:
+            None
+        """
+        if self.validate_move(row, col, new_row, new_col):
+            tmp_row, tmp_col = row, col
+            self.board[new_row][new_col] = self.board[row][col]
+            self.board[tmp_row][tmp_col] = None
