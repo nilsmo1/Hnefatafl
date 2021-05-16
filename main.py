@@ -30,17 +30,11 @@ def display_pieces(window: pygame.Surface,
 
     for row in range(size):
         for col in range(size):
-            print(type(row),type(col))
             elem = current_board_state[row][col]
             if elem is not None:
-                print(f"row {row}, col {col}, color {elem.get_color()}, elem")
                 pygame.draw.circle(window, elem.get_color(),
                                   (increment(col), increment(row)), 
                                    piece_radius)
-            else:
-                print(f"row {row}, col {col}")
-        for row in board.get_state():
-            print(row)
 
 def display_board(window     : pygame.Surface,
                   window_size: Tuple[int, int],
@@ -71,9 +65,7 @@ def display_board(window     : pygame.Surface,
             window, BLACK,
             (increment(col), margin),
             (increment(col), window_width - margin),2)
-    #print_board(board)
     display_pieces(window, window_size, board)
-    #pygame.draw.circle(window, (window_width/2, window_height/2), RED)
 
 def print_board(board: Board) -> None:
     """
@@ -99,11 +91,10 @@ def main() -> None:
     pygame.init()
     window_size = (800,800)
     window = pygame.display.set_mode(window_size)
-
+    
     board = Board(11)
     board.init_board()
     print_board(board)
-    print(board.get_state()) 
     Running = True
     # Press Q or the close the window to exit
     while Running:
