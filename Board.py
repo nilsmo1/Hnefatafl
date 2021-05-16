@@ -69,7 +69,20 @@ class Board:
             int
         """
         return self.size
-    
+   
+    def in_bounds(self, row: int, col: int) -> bool:
+        """
+        Checks if a position is on the board or not.
+        @ Parameters:
+            row: int
+            col: int
+        @ Return:
+            bool
+        """
+        return 0 <= row < self.size and 0 <= col < self.size
+
+        
+
     def occupied(self, row: int, col: int) -> bool:
         """
         Sees if a given cell is occupied or empty.
@@ -92,8 +105,13 @@ class Board:
         @ Return:
             bool
         """
+        invalid_positions = [(self.size-1, 0), (0, self.size-1),
+                             (self.size-1, self.size-1), (0, 0)]
         same_row_or_same_col = (row == new_row) ^ (col == new_col)
-        return same_row_or_same_col and not self.occupied(new_row, new_col)
+        return (same_row_or_same_col and not 
+                self.occupied(new_row, new_col) and 
+                self.in_bounds(new_row, new_col) and
+                (new_row,new_col) not in invalid_positions)
 
 
     def move(self, row, col, new_row, new_col) -> None:
