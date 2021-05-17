@@ -123,12 +123,22 @@ def move(window: pygame.Surface,
     while not fully_done:
         while not done_selecting:
             for event in pygame.event.get():
+                if (event.type == pygame.QUIT or
+                event.type == pygame.KEYDOWN and
+                event.key  == pygame.K_q
+                ): quit()
+
                 if pygame.mouse.get_pressed()[0]:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     row, col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
                     print(f"First (row: {row}, col: {col})")
                     done_selecting = True
         for event in pygame.event.get():
+            if (event.type == pygame.QUIT or
+                event.type == pygame.KEYDOWN and
+                event.key  == pygame.K_q
+                ): quit()
+
             if pygame.mouse.get_pressed()[0]:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 new_row, new_col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
@@ -165,7 +175,7 @@ def main() -> None:
             if (event.type == pygame.QUIT or
                 event.type == pygame.KEYDOWN and
                 event.key  == pygame.K_q
-                ): Running = False
+                ): quit()
         window.fill(WHITE)
         board = move(window, window_size, board)
         display_board(window, window_size, board)

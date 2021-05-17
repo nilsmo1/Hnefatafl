@@ -2,7 +2,7 @@
 
 from Colors import BLACK, LIGHT_GRAY, OFFWHITE, WHITE
 from Piece import Piece
-from typing import List, Union
+from typing import List, Union, Tuple
 
 class Board:
     """ 
