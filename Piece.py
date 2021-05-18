@@ -23,7 +23,7 @@ class Piece:
     
     def __repr__(self) -> str:
         """
-        Representation of a piece is just the first character in the role.
+        Representation of a piece is just the first character in the name of the role.
         @ Parameters:
             None
         @ Return:

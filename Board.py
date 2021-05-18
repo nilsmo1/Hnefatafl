@@ -1,6 +1,6 @@
 # Board class
 
-from Colors import BLACK, LIGHT_GRAY, OFFWHITE, WHITE
+from Colors import BLACK, LIGHT_GRAY, OFFWHITE, WHITE, YELLOW
 from Piece import Piece
 from typing import List, Union, Tuple
 
@@ -44,8 +44,8 @@ class Board:
         for i,row in enumerate(board):
             for j,pos in enumerate(row):
                 if   pos == "B": board[i][j] = Piece(i,j,"BLACK", BLACK)
-                elif pos == "W": board[i][j] = Piece(i,j,"WHITE", OFFWHITE)
-                elif pos == "K": board[i][j] = Piece(i,j,"KING" , LIGHT_GRAY)
+                elif pos == "W": board[i][j] = Piece(i,j,"WHITE", WHITE)
+                elif pos == "K": board[i][j] = Piece(i,j,"KING" , YELLOW)
                 else           : board[i][j] = None
 
         self.board = board

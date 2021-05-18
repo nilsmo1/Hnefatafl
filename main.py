@@ -54,7 +54,9 @@ def display_board(window     : pygame.Surface,
     board_width = window_width - 2 * margin
     size = board.get_size()
     increment = lambda row: margin + row * board_width / size
-    
+    board_background_color = (235, 188, 60)
+    board_background_Rect = pygame.Rect(margin, margin, board_width, board_width)
+    pygame.draw.rect(window, board_background_color, board_background_Rect)
     for row in range(size+1):
         pygame.draw.line(
             window, BLACK,
@@ -95,7 +97,6 @@ def coords_in_bounds(window_size: Tuple[int, int], coord_x: int, coord_y: int) -
     window_width, window_height = window_size
     in_bounds_x = margin < coord_x < window_width-margin
     in_bounds_y = margin < coord_y < window_height-margin
-    print(f"{coord_x, coord_y, in_bounds_x,in_bounds_y}")
     return in_bounds_x and in_bounds_y
 
 
@@ -124,18 +125,22 @@ def row_col_from_coordinates(board: Board,
 
 def move(window: pygame.Surface,
          window_size: Tuple[int, int],
-         board: Board) -> Board:
+         board: Board,
+         player: str) -> Board:
+         
     """
     Lets the player select a tile and then another tile to move a piece.
     @ Parameters:
         window     : pygame.Surface
         window_size: Tuple[int, int]
         board      : Board
+        player     : str
     @ Return:
         Board
     """
     done_selecting = False
     fully_done = False
+    current_board_state = board.get_state()
     while not fully_done:
         while not done_selecting:
             for event in pygame.event.get():
@@ -154,7 +159,10 @@ def move(window: pygame.Surface,
                     if not board.occupied(row, col):
                         print(f"Cannot select empty slot!")
                         continue
-                    print(f"First (row: {row}, col: {col})")
+                    elif current_board_state[row][col].get_role() != player:
+                        print(f"{player} has the turn!")
+                        continue
+                    print(f"First row: {row}, col: {col}")
                     done_selecting = True
 
         for event in pygame.event.get():
@@ -171,6 +179,7 @@ def move(window: pygame.Surface,
                 new_row, new_col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
                 if not board.validate_move(row, col, new_row, new_col):
                     print(f"ILLEGAL MOVE: {row, col} -> {new_row,new_col}, try again!")
+                    continue
                 print(f"Second: row: {new_row} col: {new_col}")
                 fully_done = True
             elif pygame.mouse.get_pressed()[2]:
@@ -207,12 +216,12 @@ def main() -> None:
                 event.type == pygame.KEYDOWN and
                 event.key  == pygame.K_q
                 ): quit()
-        player = ("BLACK"*(1+turn % 2)) or ("WHITE"*(turn % 2))
+        player = ("BLACK"*((1+turn) % 2)) or ("WHITE"*(turn % 2))
         if board.game_over():
             print(f"{player} WINS")
             quit()
         window.fill(WHITE)
-        board = move(window, window_size, board)
+        board = move(window, window_size, board, player)
         turn+=1
         display_board(window, window_size, board)
         pygame.display.update()

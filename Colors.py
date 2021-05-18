@@ -1,5 +1,6 @@
 # Colors
 
+YELLOW      = (247,238, 40)
 BLACK       = (  0,  0,  0)
 WHITE       = (255,255,255)
 OFFWHITE    = (230,220,230)
