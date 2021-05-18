@@ -39,6 +39,20 @@ class Board:
         . . . . . . . . . . .
         . . . . . B . . . . .
         . . . B B B B B . . .""".replace(" ","").split("\n")[1:])
+
+        RAW_TEST_BOARD_TEMPLATE = list("""
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .
+        . . . . . . . . . . .""".replace(" ","").split("\n")[1:])
+        
         board = [list(row.strip()) for row in RAW]
         
         for i,row in enumerate(board):
@@ -162,6 +176,35 @@ class Board:
             tmp_row, tmp_col = row, col
             self.board[new_row][new_col] = self.board[row][col]
             self.board[tmp_row][tmp_col] = None
+
+
+    def capture(self, row: int, col: int, role: str) -> None:
+        """
+        Checks if piece is captured after a move.
+        @ Parameters:
+            row : int
+            col : int
+            role: str
+        @ Return:
+            None
+        """
+        for row_offset, col_offset in [(1,0),(-1,0),(0,1),(0,-1)]:
+            new_row, new_col = row+row_offset, col+col_offset
+            if not self.in_bounds(new_row, new_col):
+                continue
+            piece = lambda r,c: self.board[r][c] if self.in_bounds(r,c) else None
+            if piece(new_row, new_col) != None:
+                if piece(new_row, new_col).get_role() not in [role,"KING"]:
+                    if piece(new_row+row_offset, new_col+col_offset) != None:
+                        if (piece(new_row+row_offset, new_col+col_offset).get_role() == "KING" and 
+                            role == "WHITE"):
+                            print(f"{role} captured an opponent at: row: {new_row}, col: {new_col}")
+                            self.board[new_row][new_col] = None
+                        elif piece(new_row+row_offset, new_col+col_offset).get_role() == role:
+                            print(f"{role} captured an opponent at: row: {new_row}, col: {new_col}")
+                            self.board[new_row][new_col] = None
+                
+
 
     def game_over(self) -> Tuple[int, int, int]:
         """

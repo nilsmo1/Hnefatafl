@@ -159,6 +159,8 @@ def move(window: pygame.Surface,
                     if not board.occupied(row, col):
                         print(f"Cannot select empty slot!")
                         continue
+                    elif current_board_state[row][col].get_role() == "KING" and player != "BLACK":
+                        pass
                     elif current_board_state[row][col].get_role() != player:
                         print(f"{player} has the turn!")
                         continue
@@ -185,6 +187,7 @@ def move(window: pygame.Surface,
             elif pygame.mouse.get_pressed()[2]:
                 done_selecting = False
     board.move(row, col, new_row, new_col)
+    board.capture(new_row, new_col, player)
     return board
 
         
