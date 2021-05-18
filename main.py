@@ -1,12 +1,10 @@
 # Main program
 
-
 from Board import Board
 from Piece import Piece
 from Colors import BLACK, WHITE, RED
 import pygame
 from typing import Tuple
-
 
 def display_pieces(window: pygame.Surface,
                    window_size: Tuple[int, int],
@@ -133,6 +131,7 @@ def move(window: pygame.Surface,
                     row, col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
                     print(f"First (row: {row}, col: {col})")
                     done_selecting = True
+
         for event in pygame.event.get():
             if (event.type == pygame.QUIT or
                 event.type == pygame.KEYDOWN and
@@ -142,8 +141,11 @@ def move(window: pygame.Surface,
             if pygame.mouse.get_pressed()[0]:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 new_row, new_col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
-                print(f"Second: row: {new_row} col: {new_col}")
-                fully_done = True
+                if board.validate_move(row, col, new_row, new_col):
+                    print(f"Second: row: {new_row} col: {new_col}")
+                    fully_done = True
+                else:
+                    print(f"ILLEGAL MOVE: {row, col} -> {new_row,new_col}, try again!")
             elif pygame.mouse.get_pressed()[2]:
                 done_selecting = False
     board.move(row, col, new_row, new_col)
@@ -161,6 +163,7 @@ def main() -> None:
     pygame.init()
     window_size = (800,800)
     window = pygame.display.set_mode(window_size)
+    pygame.display.set_caption("Hnefatafl")
     
     board = Board(11)
     board.init_board()
@@ -168,6 +171,7 @@ def main() -> None:
     window.fill(WHITE)
     display_board(window, window_size, board)
     pygame.display.update()
+    turn = 1
     Running = True
     # Press Q or the close the window to exit
     while Running:
@@ -176,6 +180,10 @@ def main() -> None:
                 event.type == pygame.KEYDOWN and
                 event.key  == pygame.K_q
                 ): quit()
+        player = (BLACK*(turn % 2)) or (WHITE*(1+turn % 2))
+        if board.game_over():
+            print(f"{('BLACK'*(turn % 2)) or ('WHITE'*(1+turn % 2))} WINS")
+            quit()
         window.fill(WHITE)
         board = move(window, window_size, board)
         display_board(window, window_size, board)

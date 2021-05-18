@@ -81,8 +81,32 @@ class Board:
         """
         return 0 <= row < self.size and 0 <= col < self.size
 
-        
+    
+    def clear_path(self, row: int, col: int, new_row: int, new_col: int) -> bool:
+        """
+        Determines if the move is valid or not,
+        depending on if there are any blocking pieces in the way.
+        @ Parameters:
+            row    : int
+            col    : int
+            new_row: int
+            new_col: int
+        @ Return:
+            bool
+        """
+        if row != new_row:
+            min_row, max_row = min(row,new_row), max(row,new_row)
+            for row_index in range(min_row+1, max_row):
+                if self.board[row_index][col] != None:
+                    return False
+        if col != new_col:
+            min_col, max_col = min(col,new_col), max(col,new_col)
+            for col_index in range(min_col+1, max_col):
+                if self.board[row][col_index] != None:
+                    return False
+        return True
 
+    
     def occupied(self, row: int, col: int) -> bool:
         """
         Sees if a given cell is occupied or empty.
@@ -108,19 +132,22 @@ class Board:
         invalid_positions = [(self.size-1, 0), (0, self.size-1),
                              (self.size-1, self.size-1), (0, 0)]
         same_row_or_same_col = (row == new_row) ^ (col == new_col)
-        if self.board[row][col].get_role() == "KING":
-            return (same_row_or_same_col and not 
-                    self.occupied(new_row, new_col) and 
-                    self.in_bounds(new_row, new_col) and
-                    (new_row,new_col) not in invalid_positions[-1:])
+        if self.board[row][col] != None:
+            if self.board[row][col].get_role() == "KING":
+                return (same_row_or_same_col and not 
+                        self.occupied(new_row, new_col) and 
+                        self.in_bounds(new_row, new_col) and
+                        self.clear_path(row, col, new_row, new_col) and
+                        (new_row,new_col) not in invalid_positions[-1:])
             
         return (same_row_or_same_col and not 
                 self.occupied(new_row, new_col) and 
                 self.in_bounds(new_row, new_col) and
+                self.clear_path(row, col, new_row, new_col) and
                 (new_row,new_col) not in invalid_positions)
 
 
-    def move(self, row, col, new_row, new_col) -> None:
+    def move(self, row: int, col: int, new_row: int, new_col: int) -> None:
         """
         Moves a piece on the board
         @ Parameters:
