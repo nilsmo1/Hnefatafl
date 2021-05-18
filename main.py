@@ -81,6 +81,24 @@ def print_board(board: Board) -> None:
         row = ' '.join([str(pos) if pos != None else " " for pos in row])
         print(row)
 
+
+def coords_in_bounds(window_size: Tuple[int, int], coord_x: int, coord_y: int) -> bool:
+    """
+    Checks if the given coordinates are on the board.
+    @ Parameters:
+        coord_x: int
+        coord_y: int
+    @ Return:
+        bool
+    """
+    margin = 100
+    window_width, window_height = window_size
+    in_bounds_x = margin < coord_x < window_width-margin
+    in_bounds_y = margin < coord_y < window_height-margin
+    print(f"{coord_x, coord_y, in_bounds_x,in_bounds_y}")
+    return in_bounds_x and in_bounds_y
+
+
 def row_col_from_coordinates(board: Board,
                              window_size: Tuple[int, int],
                              coord_x: float, 
@@ -128,7 +146,14 @@ def move(window: pygame.Surface,
 
                 if pygame.mouse.get_pressed()[0]:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if not coords_in_bounds(window_size, mouse_x, mouse_y):
+                        print(f"Mouse coordinates are not on the board!")
+                        continue
+                    
                     row, col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
+                    if not board.occupied(row, col):
+                        print(f"Cannot select empty slot!")
+                        continue
                     print(f"First (row: {row}, col: {col})")
                     done_selecting = True
 
@@ -140,12 +165,14 @@ def move(window: pygame.Surface,
 
             if pygame.mouse.get_pressed()[0]:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
+                if not coords_in_bounds(window_size, mouse_x, mouse_y):
+                    print("Mouse coordinates are not on the board!")
+                    continue
                 new_row, new_col = row_col_from_coordinates(board, window_size, mouse_x, mouse_y)
-                if board.validate_move(row, col, new_row, new_col):
-                    print(f"Second: row: {new_row} col: {new_col}")
-                    fully_done = True
-                else:
+                if not board.validate_move(row, col, new_row, new_col):
                     print(f"ILLEGAL MOVE: {row, col} -> {new_row,new_col}, try again!")
+                print(f"Second: row: {new_row} col: {new_col}")
+                fully_done = True
             elif pygame.mouse.get_pressed()[2]:
                 done_selecting = False
     board.move(row, col, new_row, new_col)
@@ -180,12 +207,13 @@ def main() -> None:
                 event.type == pygame.KEYDOWN and
                 event.key  == pygame.K_q
                 ): quit()
-        player = (BLACK*(turn % 2)) or (WHITE*(1+turn % 2))
+        player = ("BLACK"*(1+turn % 2)) or ("WHITE"*(turn % 2))
         if board.game_over():
-            print(f"{('BLACK'*(turn % 2)) or ('WHITE'*(1+turn % 2))} WINS")
+            print(f"{player} WINS")
             quit()
         window.fill(WHITE)
         board = move(window, window_size, board)
+        turn+=1
         display_board(window, window_size, board)
         pygame.display.update()
 
