@@ -144,7 +144,7 @@ class Board:
             bool
         """
         invalid_positions = [(self.size-1, 0), (0, self.size-1),
-                             (self.size-1, self.size-1), (0, 0)]
+                             (0,0),(self.size-1, self.size-1)]
         same_row_or_same_col = (row == new_row) ^ (col == new_col)
         if self.board[row][col] != None:
             if self.board[row][col].get_role() == "KING":
