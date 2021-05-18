@@ -143,8 +143,8 @@ def row_col_from_coordinates(board: Board,
     relevant_board_start = margin
     relevant_board_end   = window_width - margin
     position_width = (window_width-2*margin) / board.get_size()
-    row = (coord_y - 100) / position_width
-    col = (coord_x - 100) / position_width
+    row = (coord_y - margin) / position_width
+    col = (coord_x - margin) / position_width
     return (int(row), int(col))
 
 def move(window: pygame.Surface,
