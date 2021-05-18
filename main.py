@@ -220,15 +220,14 @@ def main() -> None:
                 event.key  == pygame.K_q
                 ): quit()
         player = ("BLACK"*((1+turn) % 2)) or ("WHITE"*(turn % 2))
+        window.fill(WHITE)
+        board = move(window, window_size, board, player)
+        display_board(window, window_size, board)
+        pygame.display.update()
         if board.game_over():
             print(f"{player} WINS")
             quit()
-        window.fill(WHITE)
-        board = move(window, window_size, board, player)
         turn+=1
-        display_board(window, window_size, board)
-        pygame.display.update()
-
 
 if __name__ == "__main__":
     main()

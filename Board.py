@@ -215,8 +215,7 @@ class Board:
         @ Return:
             Tuple[int, int, int]
         """
-        corners = [(self.size-1, 0), (0, self.size-1),
-                   (self.size-1, self.size-1)]
+        corners = [(self.size-1, 0), (0, self.size-1), (0,0)]
         for row, col in corners:
             pos = self.board[row][col]
             if pos != None:
