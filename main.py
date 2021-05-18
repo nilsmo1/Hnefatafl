@@ -54,9 +54,10 @@ def display_board(window     : pygame.Surface,
     board_width = window_width - 2 * margin
     size = board.get_size()
     increment = lambda row: margin + row * board_width / size
-    board_background_color = (235, 188, 60)
-    board_background_Rect = pygame.Rect(margin, margin, board_width, board_width)
-    pygame.draw.rect(window, board_background_color, board_background_Rect)
+    board_background_color = (235, 188, 60, 175)
+    board_background_surface = pygame.Surface((board_width, board_width), pygame.SRCALPHA)
+    board_background_surface.fill(board_background_color)
+    window.blit(board_background_surface, (margin,margin))
     for row in range(size+1):
         pygame.draw.line(
             window, BLACK,
@@ -98,6 +99,27 @@ def coords_in_bounds(window_size: Tuple[int, int], coord_x: int, coord_y: int) -
     in_bounds_x = margin < coord_x < window_width-margin
     in_bounds_y = margin < coord_y < window_height-margin
     return in_bounds_x and in_bounds_y
+
+
+def row_col_to_coordinates(board: Board, window_size: Tuple[int, int], row: int, col: int) -> Tuple[int, int, int]:
+    """
+    Converts a row and a column to a tuple of coordinates and a position size
+    to highlight the selected piece.
+    @ Parameters:
+        board      : Board
+        window_size: Tuple[int, int, int]
+        row        : int
+        col        : int
+    @ Return:
+        Tuple[int, int]
+    """
+    margin = 100
+    window_width, window_height = window_size
+    board_rows = board.get_size()
+    position_width = (window_width-2*margin)/board_rows
+    coord_y = margin + position_width*row
+    coord_x = margin + position_width*col
+    return (coord_x+1, coord_y+1, position_width)
 
 
 def row_col_from_coordinates(board: Board,
@@ -148,7 +170,9 @@ def move(window: pygame.Surface,
                 event.type == pygame.KEYDOWN and
                 event.key  == pygame.K_q
                 ): quit()
-
+                window.fill(WHITE)
+                display_board(window, window_size, board)
+                pygame.display.update()
                 if pygame.mouse.get_pressed()[0]:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     if not coords_in_bounds(window_size, mouse_x, mouse_y):
@@ -165,6 +189,12 @@ def move(window: pygame.Surface,
                         print(f"{player} has the turn!")
                         continue
                     print(f"First row: {row}, col: {col}")
+                    coord_x, coord_y, position_width = row_col_to_coordinates(board, window_size, row, col)
+                    red_border = pygame.Surface((position_width, position_width))
+                    red_border.fill(RED)
+                    window.blit(red_border,(coord_x, coord_y))
+                    display_board(window, window_size, board)
+                    pygame.display.update()
                     done_selecting = True
 
         for event in pygame.event.get():
@@ -222,6 +252,7 @@ def main() -> None:
         player = ("BLACK"*((1+turn) % 2)) or ("WHITE"*(turn % 2))
         window.fill(WHITE)
         board = move(window, window_size, board, player)
+        window.fill(WHITE)
         display_board(window, window_size, board)
         pygame.display.update()
         if board.game_over():
