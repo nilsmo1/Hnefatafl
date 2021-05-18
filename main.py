@@ -1,8 +1,8 @@
 # Main program
 
 from Board import Board
+from Colors import BLACK, WHITE, RED, HIGHLIGHT, BACKGROUND
 from Piece import Piece
-from Colors import BLACK, WHITE, RED
 import pygame
 from typing import Tuple
 
@@ -54,7 +54,7 @@ def display_board(window     : pygame.Surface,
     board_width = window_width - 2 * margin
     size = board.get_size()
     increment = lambda row: margin + row * board_width / size
-    board_background_color = (235, 188, 60, 175)
+    board_background_color = BACKGROUND
     board_background_surface = pygame.Surface((board_width, board_width), pygame.SRCALPHA)
     board_background_surface.fill(board_background_color)
     window.blit(board_background_surface, (margin,margin))
@@ -80,17 +80,19 @@ def print_board(board: Board) -> None:
     @ Return:
         None
     """
+    print()
     for row in board.get_state():
-        row = ' '.join([str(pos) if pos != None else " " for pos in row])
+        row = '\t'+' '.join([str(pos) if pos != None else " " for pos in row])
         print(row)
-
+    print()
 
 def coords_in_bounds(window_size: Tuple[int, int], coord_x: int, coord_y: int) -> bool:
     """
     Checks if the given coordinates are on the board.
     @ Parameters:
-        coord_x: int
-        coord_y: int
+        window_size: Tuple[int, int]
+        coord_x    : int
+        coord_y    : int
     @ Return:
         bool
     """
@@ -188,11 +190,11 @@ def move(window: pygame.Surface,
                     elif current_board_state[row][col].get_role() != player:
                         print(f"{player} has the turn!")
                         continue
-                    print(f"First row: {row}, col: {col}")
+                    print(f"First  : row: {row}, col: {col}")
                     coord_x, coord_y, position_width = row_col_to_coordinates(board, window_size, row, col)
-                    red_border = pygame.Surface((position_width, position_width))
-                    red_border.fill(RED)
-                    window.blit(red_border,(coord_x, coord_y))
+                    highlighter = pygame.Surface((position_width, position_width))
+                    highlighter.fill(HIGHLIGHT)
+                    window.blit(highlighter,(coord_x, coord_y))
                     display_board(window, window_size, board)
                     pygame.display.update()
                     done_selecting = True
@@ -212,7 +214,7 @@ def move(window: pygame.Surface,
                 if not board.validate_move(row, col, new_row, new_col):
                     print(f"ILLEGAL MOVE: {row, col} -> {new_row,new_col}, try again!")
                     continue
-                print(f"Second: row: {new_row} col: {new_col}")
+                print(f"Second : row: {new_row}, col: {new_col}")
                 fully_done = True
             elif pygame.mouse.get_pressed()[2]:
                 done_selecting = False

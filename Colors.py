@@ -1,5 +1,6 @@
 # Colors
-
+BACKGROUND  = (235,188, 60,150)
+HIGHLIGHT   = (255,  0,  0)
 YELLOW      = (247,238, 40)
 BLACK       = (  0,  0,  0)
 WHITE       = (255,255,255)
