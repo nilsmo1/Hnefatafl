@@ -6,6 +6,25 @@ from Piece import Piece
 import pygame
 from typing import Tuple
 
+def display_turn(window: pygame.Surface, 
+                 window_size: Tuple[int, int],
+                 turn: str) -> None:
+    """
+    Function that displays the current players turn so 
+    that it is easier to distinguish who's turn it is.
+    @ Parameters: 
+        window     : pygame.Surface
+        window_size: Tuple[int, int]
+        turn       : str
+    @ Return:
+        None
+    """
+    window_width, _ = window_size
+    font = pygame.font.SysFont("Comic Sans MS", 50)
+    text = font.render(turn, False, BLACK)
+    window.blit(text, (window_width/2-60,30))
+
+
 def display_pieces(window: pygame.Surface,
                    window_size: Tuple[int, int],
                    board: Board) -> None:
@@ -34,7 +53,7 @@ def display_pieces(window: pygame.Surface,
             if elem is not None:
                 pygame.draw.circle(window, elem.get_color(),
                                   (increment(col), increment(row)), 
-                                   piece_radius)
+                                   piece_radius, 10)
 
 
 def display_board(window     : pygame.Surface,
@@ -103,7 +122,9 @@ def coords_in_bounds(window_size: Tuple[int, int], coord_x: int, coord_y: int) -
     return in_bounds_x and in_bounds_y
 
 
-def row_col_to_coordinates(board: Board, window_size: Tuple[int, int], row: int, col: int) -> Tuple[int, int, int]:
+def row_col_to_coordinates(board: Board, 
+                           window_size: Tuple[int, int],
+                           row: int, col: int) -> Tuple[int, int, int]:
     """
     Converts a row and a column to a tuple of coordinates and a position size
     to highlight the selected piece.
@@ -173,6 +194,7 @@ def move(window: pygame.Surface,
                 event.key  == pygame.K_q
                 ): quit()
                 window.fill(WHITE)
+                display_turn(window, window_size, player)
                 display_board(window, window_size, board)
                 pygame.display.update()
                 if pygame.mouse.get_pressed()[0]:
@@ -235,7 +257,9 @@ def main() -> None:
     window_size = (800,800)
     window = pygame.display.set_mode(window_size)
     pygame.display.set_caption("Hnefatafl")
-    
+    pygame.font.init() 
+    font = pygame.font.SysFont("Comic Sans MS", 30)
+
     board = Board(11)
     board.init_board()
     print_board(board)
@@ -254,6 +278,8 @@ def main() -> None:
         player = ("BLACK"*((1+turn) % 2)) or ("WHITE"*(turn % 2))
         window.fill(WHITE)
         board = move(window, window_size, board, player)
+        if board.king_has_moved():
+            board.place_blocking_piece()
         window.fill(WHITE)
         display_board(window, window_size, board)
         pygame.display.update()
