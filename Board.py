@@ -215,8 +215,8 @@ class Board:
             if not self.in_bounds(new_row, new_col):
                 continue
             piece = lambda r,c: self.board[r][c] if self.in_bounds(r,c) else None
-            if piece(new_row, new_col) != None:
-                if piece(new_row, new_col).get_role() not in [role,"KING"]:
+            if piece(new_row, new_col) != None: 
+                if piece(new_row, new_col).get_role() not in [role,"KING", "BLOCKER"]:
                     if piece(new_row+row_offset, new_col+col_offset) != None:
                         if (piece(new_row+row_offset, new_col+col_offset).get_role() == "KING" and 
                             role == "WHITE"):
