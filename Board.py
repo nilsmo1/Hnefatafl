@@ -43,18 +43,18 @@ class Board:
 
         RAW_TEST_BOARD_TEMPLATE = list("""
         . . . . . . . . . . .
+        . . . . . W . . . . .
         . . . . . . . . . . .
         . . . . . . . . . . .
+        . . B . . . . . B . .
+        . . . . . K . . . . .
         . . . . . . . . . . .
-        . . . . . . . . . . .
-        . . . . . . . . . . .
-        . . . . . . . . . . .
-        . . . . . . . . . . .
+        . . B . . . . . B . .
         . . . . . . . . . . .
         . . . . . . . . . . .
         . . . . . . . . . . .""".replace(" ","").split("\n")[1:])
         
-        board = [list(row.strip()) for row in RAW]
+        board = [list(row.strip()) for row in RAW_TEST_BOARD_TEMPLATE]
         
         for i,row in enumerate(board):
             for j,pos in enumerate(row):
@@ -239,22 +239,64 @@ class Board:
         self.board[row][col] = Piece(row, col, "BLOCKER", BLOCKER)
         print("sucessfull placement of blocker!\n\n")
 
+    
+    def neighbours(self, row: int, col: int) -> int:
+        """
+        Checks how many black neighbours the a position has.
+        @ Parameters:
+            row: int
+            col: int
+        @ Return:
+            int
+        """
+        result = 0
+        for i,j in [(1,0),(-1,0),(0,1),(0,-1)]:
+            pos = self.board[row+i][col+j]
+            print(f"neighbourcheck: {row+i,col+j, pos}")
+            if self.in_bounds(row+i,col+j) and pos != None:
+                if pos.get_role() in ["BLACK", "BLOCKER"]:
+                    result += 1
+        return result
 
-    def game_over(self) -> Tuple[int, int, int]:
+    def king_immovable(self, row: int, col: int) -> bool:
+        """
+        Checks if the king is captured.
+        @ Parameters:
+            row: int
+            col: int
+        @ Return:
+            bool
+        """
+        result = self.neighbours(row, col)
+        against_wall = ((row == 0 or row == self.size-1) or 
+                        (col == 0 or col == self.size-1))
+        print(f"result, against_wall={result, against_wall}")
+        return result + against_wall
+
+
+    def game_over(self) -> Union[None, str]:
         """
         Checks if the board is in a state where one of the teams has won.
         Returns a color depending on which team won.
         @ Parameters:
             None
         @ Return:
-            Tuple[int, int, int]
+            Union[None, str]
         """
         corners = [(self.size-1, 0), (0, self.size-1), (0,0)]
         for row, col in corners:
             pos = self.board[row][col]
             if pos != None:
                 if pos.get_role() == "KING":
-                    return WHITE
-        # TODO: make win-conditions for BLACK team
-
-        
+                    return "WHITE"
+        for i in range(self.size):
+            for j in range(self.size):
+                pos = self.board[i][j]
+                if pos == None: pass
+                elif pos.get_role() == "KING":
+                    row, col = i,j
+                    break
+        if self.king_immovable(row, col) == 4:
+            return "BLACK"
+        return None
+         

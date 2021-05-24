@@ -258,7 +258,6 @@ def main() -> None:
     window = pygame.display.set_mode(window_size)
     pygame.display.set_caption("Hnefatafl")
     pygame.font.init() 
-    font = pygame.font.SysFont("Comic Sans MS", 30)
 
     board = Board(11)
     board.init_board()
@@ -283,7 +282,7 @@ def main() -> None:
         window.fill(WHITE)
         display_board(window, window_size, board)
         pygame.display.update()
-        if board.game_over():
+        if board.game_over() != None:
             print(f"{player} WINS")
             quit()
         turn+=1
