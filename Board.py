@@ -54,7 +54,7 @@ class Board:
         . . . . . . . . . . .
         . . . . . . . . . . .""".replace(" ","").split("\n")[1:])
         
-        board = [list(row.strip()) for row in RAW_TEST_BOARD_TEMPLATE]
+        board = [list(row.strip()) for row in RAW]
         
         for i,row in enumerate(board):
             for j,pos in enumerate(row):
